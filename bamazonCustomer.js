@@ -52,23 +52,28 @@ function checkQuantity(item){
 
     console.log(item.product);
   }
-  connection.query("SELECT * FROM products where item_id =?",[item.product], function(err, res) {
-    for (var i = 0; i < res.length; i++) {
-      console.log(res[i].item_id + " | " + res[i].product_name + " | " + res[i].department_name + " | " + res[i].price + " | " + res[i].stock_quantity);
-    }
-    if (res.length === 0) {
+  connection.query("SELECT * FROM products where item_id =?",[item.product], function(err, result) {
+    for (var i = 0; i < result.length; i++) {
+      console.log(result[i].item_id + " | " + result[i].product_name + " | " + result[i].department_name + " | " + result[i].price + " | " + result[i].stock_quantity);
+    }if (item.quantity < result[0].stock_quantity){
+      console.log('Congratulations, your item is in stock!')
+      start();
+
+     } if (result.length === 0) {
       console.log('ERROR: Select a valid Item ID from the Products list.');
       start();
     }
-    if (item.quantity > res[0].stock_quantity){
+    if (item.quantity > result[0].stock_quantity){
       console.log('ERROR: Insufficient quantity.')
       start();
     } else {
-    //  selected 3 updates stock quantity for given item id
-    var newQuantity = item.quantity - res[0].stock_quantity;
-    updateQuantity (item, newQuantity )
+
+
+      //  selected 3 updates stock quantity for given item id
+      var newQuantity = result[0].stock_quantity - item.quantity;
+      updateQuantity (item, newQuantity )
     }
-  });
+    });
 
 
 
